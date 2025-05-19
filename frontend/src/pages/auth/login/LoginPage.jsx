@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import XSvg from "../../../components/svgs/X";
-
+import toast from "react-hot-toast";
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
 
@@ -12,16 +12,47 @@ const LoginPage = () => {
     password: "",
   });
 
+  const queryClient = useQueryClient();
+  const { mutate, isError, isPending, error } = useMutation({
+    mutationFn: async ({ username, password }) => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        // console.log(data);
+        return data;
+      } catch (error) {
+        console.error(error);
+        // toast.error(error.message);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      //refetch the authUser
+      // toast.success("Log");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (!formData.username || !formData.password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+    mutate(formData);
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const isError = false;
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen">
@@ -56,9 +87,9 @@ const LoginPage = () => {
             />
           </label>
           <button className="btn rounded-full bg-[#1A77F2] text-white border-[#005fd8]">
-            Login
+            {isPending ? "Loading..." : "Login"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
         <div className="flex flex-col gap-2 mt-4">
           <p className="text-white text-lg">{"Don't"} have an account?</p>
