@@ -192,7 +192,7 @@ const ProfilePage = () => {
                 >
                   Posts
                   {feedType === "posts" && (
-                    <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary" />
+                    <div className="absolute bottom-0 w-10 h-1 rounded-full bg-[#1A77F2] text-white border-[#005fd8]" />
                   )}
                 </div>
                 <div
@@ -201,7 +201,7 @@ const ProfilePage = () => {
                 >
                   Likes
                   {feedType === "likes" && (
-                    <div className="absolute bottom-0 w-10  h-1 rounded-full bg-primary" />
+                    <div className="absolute bottom-0 w-10  h-1 rounded-full bg-[#1A77F2] text-white border-[#005fd8]" />
                   )}
                 </div>
               </div>
