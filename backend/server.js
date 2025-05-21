@@ -19,7 +19,7 @@ cloudinary.config({
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json()); // used to parse req.bodu from auth.controller.js
+app.use(express.json({ limit: "5mb" })); // used to parse req.bodu from auth.controller.js
 app.use(express.urlencoded({ extended: true })); // used to parse from data(urlencoded)
 app.use(cookieParser());
 
